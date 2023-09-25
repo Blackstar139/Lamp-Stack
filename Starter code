@@ -1,0 +1,46 @@
+#!/bin/bash
+
+# Update package lists
+sudo apt update
+
+# Install Apache web server
+sudo apt install apache2 -y
+
+# Enable Apache to start on boot
+sudo systemctl enable apache2
+
+# Start Apache
+sudo systemctl start apache2
+
+# Install MySQL server
+sudo apt install mysql-server -y
+
+# Secure MySQL installation (you will be prompted to set a root password)
+sudo mysql_secure_installation
+
+# Install PHP and required modules
+sudo apt install php libapache2-mod-php php-mysql -y
+
+# Create a PHP test file to check if PHP is working
+echo "<?php phpinfo(); ?>" | sudo tee /var/www/html/info.php
+
+# Set permissions on the PHP test file (for security)
+sudo chown www-data:www-data /var/www/html/info.php
+
+# Restart Apache to apply changes
+sudo systemctl restart apache2
+
+# Firewall configuration (if using UFW)
+sudo ufw allow 'Apache'
+sudo ufw allow 'MySQL'
+sudo ufw enable
+
+# Inform the user about the PHP test file
+echo "LAMP stack installation complete."
+echo "You can access the PHP info page at http://your_server_ip/info.php"
+
+# Clean up (optional)
+# sudo apt clean
+
+# Optionally, you can remove the installation script if you no longer need it
+# rm ~/lamp_setup.sh
